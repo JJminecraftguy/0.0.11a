@@ -110,6 +110,7 @@ public class Chunk {
 		GL11.glCallList(this.lists + layer);
 
 		if(!this.dynamicTiles.isEmpty()) {
+			t.init();
 			String prevTexture = null;
 
 			for(DynamicTileInfo dynamicTile : this.dynamicTiles) {
@@ -123,6 +124,7 @@ public class Chunk {
 				dynamicTile.render(t, this.level, player, layer);
 			}
 
+			t.flush();
 			if(prevTexture != null) {
 				int id = textures.loadTexture("/terrain.png", GL11.GL_LINEAR);
 				GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
