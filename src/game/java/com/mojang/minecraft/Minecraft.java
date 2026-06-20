@@ -270,90 +270,99 @@ public class Minecraft implements Runnable {
 	        saveCountdown = 600;
 	    }
 	}
-	public void tick() {
-		while(Mouse.next()) {
-			if(this.firstPerson && !this.mouseGrabbed && Mouse.getEventButtonState()) {
-				this.grabMouse();
-			} else {
-				if(Mouse.getEventButton() == 0 && Mouse.getEventButtonState()) {
-					this.handleMouseClick();
-				}
+    public void tick() {
+        while(Mouse.next()) {
+            if(this.firstPerson && !this.mouseGrabbed && Mouse.getEventButtonState()) {
+                this.grabMouse();
+            } else {
+                if(Mouse.getEventButton() == 0 && Mouse.getEventButtonState()) {
+                    this.handleMouseClick();
+                }
 
-				if(Mouse.getEventButton() == 1 && Mouse.getEventButtonState()) {
-					this.editMode = (this.editMode + 1) % 2;
-				}
-			}
-		}
+                if(Mouse.getEventButton() == 1 && Mouse.getEventButtonState()) {
+                    this.editMode = (this.editMode + 1) % 2;
+                }
 
-		while(true) {
-			do {
-				if(!Keyboard.next()) {
-					this.level.tick();
-					this.particleEngine.tick();
+                // 3rd person middle mouse button grab/ungrab
+                if(!this.firstPerson && Mouse.getEventButton() == 2) {
+                    if(Mouse.getEventButtonState() && !this.mouseGrabbed) {
+                        this.grabMouse();
+                    } else if(!Mouse.getEventButtonState() && this.mouseGrabbed) {
+                        this.releaseMouse();
+                    }
+                }
+            }
+        }
 
-					for(int i = 0; i < this.entities.size(); ++i) {
-						((Entity)this.entities.get(i)).tick();
-						if(((Entity)this.entities.get(i)).removed) {
-							this.entities.remove(i--);
-						}
-					}
+        while(true) {
+            do {
+                if(!Keyboard.next()) {
+                    this.level.tick();
+                    this.particleEngine.tick();
 
-					this.player.tick();
-		            levelSave();
-					return;
-				}
-			} while(!Keyboard.getEventKeyState());
+                    for(int i = 0; i < this.entities.size(); ++i) {
+                        ((Entity)this.entities.get(i)).tick();
+                        if(((Entity)this.entities.get(i)).removed) {
+                            this.entities.remove(i--);
+                        }
+                    }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_ESCAPE && (!this.fullscreen)) {
-				this.releaseMouse();
-			}
+                    this.player.tick();
+                    levelSave();
+                    return;
+                }
+            } while(!Keyboard.getEventKeyState());
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_RETURN) {
-				this.level.save();
-			}
+            if(Keyboard.getEventKey() == Keyboard.KEY_ESCAPE && (!this.fullscreen)) {
+                this.releaseMouse();
+            }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_1) {
-				this.paintTexture = 1;
-			}
+            if(Keyboard.getEventKey() == Keyboard.KEY_RETURN) {
+                this.level.save();
+            }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_2) {
-				this.paintTexture = 3;
-			}
+            if(Keyboard.getEventKey() == Keyboard.KEY_1) {
+                this.paintTexture = 1;
+            }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_3) {
-				this.paintTexture = 4;
-			}
+            if(Keyboard.getEventKey() == Keyboard.KEY_2) {
+                this.paintTexture = 3;
+            }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_4) {
-				this.paintTexture = 5;
-			}
+            if(Keyboard.getEventKey() == Keyboard.KEY_3) {
+                this.paintTexture = 4;
+            }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_5) {
-				this.paintTexture = 7;
-			}
+            if(Keyboard.getEventKey() == Keyboard.KEY_4) {
+                this.paintTexture = 5;
+            }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_6) {
-				this.paintTexture = 6;
-			}
+            if(Keyboard.getEventKey() == Keyboard.KEY_5) {
+                this.paintTexture = 7;
+            }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_Y) {
-				this.yMouseAxis *= -1;
-			}
+            if(Keyboard.getEventKey() == Keyboard.KEY_6) {
+                this.paintTexture = 6;
+            }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_G) {
-				this.entities.add(new Zombie(this.level, this.textures, this.player.x, this.player.y, this.player.z));
-			}
+            if(Keyboard.getEventKey() == Keyboard.KEY_Y) {
+                this.yMouseAxis *= -1;
+            }
 
-			if(Keyboard.getEventKey() == Keyboard.KEY_TAB) {
-				this.firstPerson = !this.firstPerson;
-				if(this.firstPerson) {
-					this.grabMouse();
-				} else {
-					this.releaseMouse();
-				}
-			}
-		}
-	}
+            if(Keyboard.getEventKey() == Keyboard.KEY_G) {
+                this.entities.add(new Zombie(this.level, this.textures, this.player.x, this.player.y, this.player.z));
+            }
+
+            if(Keyboard.getEventKey() == Keyboard.KEY_TAB) {
+                this.firstPerson = !this.firstPerson;
+                if(this.firstPerson) {
+                    this.grabMouse();
+                } else {
+                    this.releaseMouse();
+                }
+            }
+        }
+    }
 	
 	private boolean isFree(AABB aabb) {
 		if(this.player.bb.intersects(aabb)) {
@@ -397,67 +406,125 @@ public class Minecraft implements Runnable {
 		this.moveCameraToPlayer(a);
 	}
 
-	private void pick(float a) {
-	    double px = player.x;
-	    double py = player.y;
-	    double pz = player.z;
+    private void pick(float a) {
+        double px = player.x;
+        double py = player.y;
+        double pz = player.z;
 
-	    float yaw = (float) Math.toRadians(player.yRot);
-	    float pitch = (float) Math.toRadians(player.xRot);
+        float yaw = (float) Math.toRadians(player.yRot);
+        float pitch = (float) Math.toRadians(player.xRot);
 
-	    double dx = Math.sin(yaw) * Math.cos(pitch);
-	    double dy = -Math.sin(pitch);
-	    double dz = -Math.cos(yaw) * Math.cos(pitch);
+        double dx = Math.sin(yaw) * Math.cos(pitch);
+        double dy = -Math.sin(pitch);
+        double dz = -Math.cos(yaw) * Math.cos(pitch);
 
-	    double reach = 3.0;
-	    double step = 0.05;
+        double reach = 5.0; // 5 block reach limit
+        double startOffset = 0.0;
 
-	    HitResult closestHit = null;
+        if (!this.firstPerson) {
+            float aspectRatio = (float) this.width / this.height;
+            float ndcX = (2.0F * Mouse.getX() / this.width) - 1.0F;
+            float ndcY = (2.0F * Mouse.getY() / this.height) - 1.0F;
 
-	    double closestT = reach + 1;
+            float eyeX = ndcX * this.cameraZoom * aspectRatio;
+            float eyeY = ndcY * this.cameraZoom;
 
-	    for (int x = (int) Math.floor(px - reach); x <= (int) Math.floor(px + reach); x++) {
-	        for (int y = (int) Math.floor(py - (reach + 1)); y <= (int) Math.floor(py + (reach + 1)); y++) {
-	            for (int z = (int) Math.floor(pz - reach); z <= (int) Math.floor(pz + reach); z++) {
-	                int block = level.getTile(x, y, z);
-	                if (block != 0) {
+            float cosY = (float) Math.cos(yaw);
+            float sinY = (float) Math.sin(yaw);
+            float cosP = (float) Math.cos(pitch);
+            float sinP = (float) Math.sin(pitch);
 
-	                    double txmin = (x - px) / dx;
-	                    double txmax = (x + 1 - px) / dx;
-	                    if (txmin > txmax) { double temp = txmin; txmin = txmax; txmax = temp; }
+            // Correct inverse camera rotation to properly align parallel rays
+            px += cosY * eyeX + sinY * sinP * eyeY;
+            py += cosP * eyeY;
+            pz += sinY * eyeX - cosY * sinP * eyeY;
 
-	                    double tymin = (y - py) / dy;
-	                    double tymax = (y + 1 - py) / dy;
-	                    if (tymin > tymax) { double temp = tymin; tymin = tymax; tymax = temp; }
+            // Start ray from slightly behind the camera to prevent clipping
+            // and missing blocks when aiming at edge of screen
+            startOffset = 20.0;
+            px -= dx * startOffset;
+            py -= dy * startOffset;
+            pz -= dz * startOffset;
 
-	                    double tzmin = (z - pz) / dz;
-	                    double tzmax = (z + 1 - pz) / dz;
-	                    if (tzmin > tzmax) { double temp = tzmin; tzmin = tzmax; tzmax = temp; }
+            reach = 60.0; // Max search distance for the raycast
+        }
 
-	                    double tEnter = Math.max(Math.max(txmin, tymin), tzmin);
-	                    double tExit = Math.min(Math.min(txmax, tymax), tzmax);
+        // Prevent division by zero when looking exactly axis-aligned
+        if (Math.abs(dx) < 1e-10) dx = 1e-10;
+        if (Math.abs(dy) < 1e-10) dy = 1e-10;
+        if (Math.abs(dz) < 1e-10) dz = 1e-10;
 
-	                    if (tEnter <= tExit && tEnter < closestT && tEnter >= 0 && tEnter <= reach + 1) {
-	                        closestT = tEnter;
+        double endX = px + dx * reach;
+        double endY = py + dy * reach;
+        double endZ = pz + dz * reach;
 
-	                        int face;
-	                        if (tEnter == txmin) {
-	                            face = dx > 0 ? 4 : 5;
-	                        } else if (tEnter == tymin) {
-	                            face = dy > 0 ? 0 : 1;
-	                        } else {
-	                            face = dz > 0 ? 2 : 3;
-	                        }
+        int xMin = (int) Math.floor(Math.min(px, endX));
+        int xMax = (int) Math.floor(Math.max(px, endX));
+        int yMin = (int) Math.floor(Math.min(py, endY));
+        int yMax = (int) Math.floor(Math.max(py, endY));
+        int zMin = (int) Math.floor(Math.min(pz, endZ));
+        int zMax = (int) Math.floor(Math.max(pz, endZ));
 
-	                        closestHit = new HitResult(block, x, y, z, face);
-	                    }
-	                }
-	            }
-	        }
-	    }
+        HitResult closestHit = null;
+        double closestT = reach + 1;
 
-	    this.hitResult = closestHit;
-	}
+        for (int x = xMin; x <= xMax; x++) {
+            for (int y = yMin; y <= yMax; y++) {
+                for (int z = zMin; z <= zMax; z++) {
+                    int block = level.getTile(x, y, z);
+                    if (block != 0) {
+                        double txmin = (x - px) / dx;
+                        double txmax = (x + 1 - px) / dx;
+                        if (txmin > txmax) { double temp = txmin; txmin = txmax; txmax = temp; }
+
+                        double tymin = (y - py) / dy;
+                        double tymax = (y + 1 - py) / dy;
+                        if (tymin > tymax) { double temp = tymin; tymin = tymax; tymax = temp; }
+
+                        double tzmin = (z - pz) / dz;
+                        double tzmax = (z + 1 - pz) / dz;
+                        if (tzmin > tzmax) { double temp = tzmin; tzmin = tzmax; tzmax = temp; }
+
+                        double tEnter = Math.max(Math.max(txmin, tymin), tzmin);
+                        double tExit = Math.min(Math.min(txmax, tymax), tzmax);
+
+                        if (tEnter <= tExit && tEnter < closestT && tEnter >= startOffset && tEnter <= reach) {
+                            closestT = tEnter;
+
+                            int face;
+                            if (tEnter == txmin) {
+                                face = dx > 0 ? 4 : 5;
+                            } else if (tEnter == tymin) {
+                                face = dy > 0 ? 0 : 1;
+                            } else {
+                                face = dz > 0 ? 2 : 3;
+                            }
+
+                            closestHit = new HitResult(block, x, y, z, face);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Enforce strict 5-block reach from the player in 3rd person
+        if (closestHit != null && !this.firstPerson) {
+            double hitX = px + dx * closestT;
+            double hitY = py + dy * closestT;
+            double hitZ = pz + dz * closestT;
+
+            double distSq = (hitX - player.x) * (hitX - player.x) +
+                            (hitY - player.y) * (hitY - player.y) +
+                            (hitZ - player.z) * (hitZ - player.z);
+
+            // 5.0 * 5.0 = 25.0. If hit is beyond 5 blocks, hide outline & prevent interaction
+            if (distSq > 25.0) {
+                closestHit = null;
+            }
+        }
+
+        this.hitResult = closestHit;
+    }
 
 	public void render(float a) {
 		if(!Display.isActive()) {
