@@ -11,8 +11,6 @@ import com.mojang.minecraft.particle.ParticleEngine;
 import com.mojang.minecraft.phys.AABB;
 
 public class Tile {
-	protected static final Random visualRand = new Random();
-
 	public static final Tile[] tiles = new Tile[256];
 	public static final Tile empty = null;
 	public static final Tile rock = new TerrainTile(1, 1);
@@ -470,7 +468,16 @@ public class Tile {
 			|| shape == 0b1000;
 	}
 
-	protected static void setVisualRandSeed(int x, int y, int z, long salt) {
-		visualRand.setSeed(x * 18397L + y * 20483L + z * 29303L ^ salt);
+	protected static int visualHash(int x, int y, int z, long salt) {
+		int h = (int)((long)x * 18397L + (long)y * 20483L + (long)z * 29303L);
+		h ^= (int)salt;
+		h ^= h >>> 13;
+		h *= 0x45d9f3b;
+		h ^= h >>> 16;
+		return h;
+	}
+
+	protected static float visualHashFloat(int x, int y, int z, long salt) {
+		return (visualHash(x, y, z, salt) & 0xFFFFFF) / (float)0x1000000;
 	}
 }

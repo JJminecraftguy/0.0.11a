@@ -45,9 +45,9 @@ public class TreeTile extends Bush {
         float xf = x + 0.5F;
         float zf = z + 0.5F;
 
-        setVisualRandSeed(x, y, z, "Tree".hashCode());
-        xf += visualRand.nextFloat() * 0.5F - 0.25F;
-        zf += visualRand.nextFloat() * 0.5F - 0.25F;
+        long treeSalt = "Tree".hashCode();
+        xf += (visualHashFloat(x, y, z, treeSalt) - 0.5F) * 0.5F;
+        zf += (visualHashFloat(x, y, z, treeSalt + 1) - 0.5F) * 0.5F;
 
         GL11.glPushMatrix();
         GL11.glTranslatef(xf, y, zf);

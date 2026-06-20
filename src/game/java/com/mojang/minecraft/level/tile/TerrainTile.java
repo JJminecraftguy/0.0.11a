@@ -5,8 +5,6 @@ import com.mojang.minecraft.level.Level;
 import java.util.Random;
 
 public class TerrainTile extends Tile {
-    private static final Random colorRand = new Random();
-
     protected TerrainTile(int id, int tex) {
         super(id, tex);
     }
@@ -95,10 +93,10 @@ public class TerrainTile extends Tile {
     }
 
     protected int getColor(Level level, int x, int y, int z) {
-        setVisualRandSeed(x, y, z, 0);
-        int r = 192 + visualRand.nextInt(64);
-        int g = 192 + visualRand.nextInt(64);
-        int b = 192 + visualRand.nextInt(64);
+        int hash = visualHash(x, y, z, 0);
+        int r = 192 + (hash & 63);
+        int g = 192 + ((hash >>> 6) & 63);
+        int b = 192 + ((hash >>> 12) & 63);
         return r << 16 | g << 8 | b;
     }
 }
