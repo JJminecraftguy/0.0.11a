@@ -33,42 +33,48 @@ public class Tile {
 		this.tex = tex;
 	}
 
-	public void render(Tesselator t, Level level, int layer, int x, int y, int z) {
-		int color = this.getColor(level, x, y, z);
-		float r = ((color >> 16) & 0xFF) / 255.0F;
-		float g = ((color >> 8) & 0xFF) / 255.0F;
-		float b = (color & 0xFF) / 255.0F;
+    public void render(Tesselator t, Level level, int layer, int x, int y, int z) {
+        int color = this.getColor(level, x, y, z);
+        float r = ((color >> 16) & 0xFF) / 255.0F;
+        float g = ((color >> 8) & 0xFF) / 255.0F;
+        float b = (color & 0xFF) / 255.0F;
 
-		byte shape = level.getShape(x, y, z);
+        if (layer == 1) {
+            r *= 0.6F;
+            g *= 0.6F;
+            b *= 0.6F;
+        }
 
-		float c1 = 1.0F;
-		float c2 = 0.6F;
-		float c3 = 0.4F;
-		if(this.shouldRenderFace(level, x, y - 1, z, layer, 0)) {
-			this.renderFace(t, shape, x, y, z, 0, r * c1, g * c1, b * c1);
-		}
+        byte shape = level.getShape(x, y, z);
 
-		if(this.shouldRenderFace(level, x, y + 1, z, layer, 1)) {
-			this.renderFace(t, shape, x, y, z, 1, r * c1, g * c1, b * c1);
-		}
+        float c1 = 1.0F;
+        float c2 = 0.8F;
+        float c3 = 0.6F;
+        if(this.shouldRenderFace(level, x, y - 1, z, layer, 0)) {
+            this.renderFace(t, shape, x, y, z, 0, r * c1, g * c1, b * c1);
+        }
 
-		if(this.shouldRenderFace(level, x, y, z - 1, layer, 2)) {
-			this.renderFace(t, shape, x, y, z, 2, r * c2, g * c2, b * c2);
-		}
+        if(this.shouldRenderFace(level, x, y + 1, z, layer, 1)) {
+            this.renderFace(t, shape, x, y, z, 1, r * c1, g * c1, b * c1);
+        }
 
-		if(this.shouldRenderFace(level, x, y, z + 1, layer, 3)) {
-			this.renderFace(t, shape, x, y, z, 3, r * c2, g * c2, b * c2);
-		}
+        if(this.shouldRenderFace(level, x, y, z - 1, layer, 2)) {
+            this.renderFace(t, shape, x, y, z, 2, r * c2, g * c2, b * c2);
+        }
 
-		if(this.shouldRenderFace(level, x - 1, y, z, layer, 4)) {
-			this.renderFace(t, shape, x, y, z, 4, r * c3, g * c3, b * c3);
-		}
+        if(this.shouldRenderFace(level, x, y, z + 1, layer, 3)) {
+            this.renderFace(t, shape, x, y, z, 3, r * c2, g * c2, b * c2);
+        }
 
-		if(this.shouldRenderFace(level, x + 1, y, z, layer, 5)) {
-			this.renderFace(t, shape, x, y, z, 5, r * c3, g * c3, b * c3);
-		}
+        if(this.shouldRenderFace(level, x - 1, y, z, layer, 4)) {
+            this.renderFace(t, shape, x, y, z, 4, r * c3, g * c3, b * c3);
+        }
 
-	}
+        if(this.shouldRenderFace(level, x + 1, y, z, layer, 5)) {
+            this.renderFace(t, shape, x, y, z, 5, r * c3, g * c3, b * c3);
+        }
+
+    }
 
 	public void render(Tesselator t, Level level, Player player, int layer, int x, int y, int z) {
 		this.render(t, level, layer, x, y, z);

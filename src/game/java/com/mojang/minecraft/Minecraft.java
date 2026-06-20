@@ -661,23 +661,19 @@ public class Minecraft implements Runnable {
 			this.checkGlError("GUI: Draw crosshair");
 		}
 	}
-	private void setupFog(int i) {
-		if(i == 0) {
-			GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_EXP);
-			GL11.glFogf(GL11.GL_FOG_DENSITY, 0.01F);
-			GL11.glFog(GL11.GL_FOG_COLOR, this.fogColor0);
-			GL11.glDisable(GL11.GL_LIGHTING);
-		} else if(i == 1) {
-			GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_EXP);
-			GL11.glFogf(GL11.GL_FOG_DENSITY, 0.1F);
-			GL11.glFog(GL11.GL_FOG_COLOR, this.fogColor0);
-			GL11.glEnable(GL11.GL_LIGHTING);
-//			GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-			float br = 0.6F;
-//			GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, this.getBuffer(br, br, br, 1.0F));
-		}
-
-	}
+    private void setupFog(int i) {
+        if(i == 0) {
+            GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_EXP);
+            GL11.glFogf(GL11.GL_FOG_DENSITY, 0.01F);
+            GL11.glFog(GL11.GL_FOG_COLOR, this.fogColor0);
+            GL11.glDisable(GL11.GL_LIGHTING);
+        } else if(i == 1) {
+            GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_EXP);
+            GL11.glFogf(GL11.GL_FOG_DENSITY, 0.1F);
+            GL11.glFog(GL11.GL_FOG_COLOR, this.fogColor1);
+            GL11.glDisable(GL11.GL_LIGHTING);
+        }
+    }
 
 	private FloatBuffer getBuffer(float a, float b, float c, float d) {
 		this.lb.clear();
